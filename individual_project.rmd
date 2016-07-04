@@ -1,0 +1,34 @@
+---
+title: "Comparasion of ajax table loading"
+subtitle: "Experiment Design for Computer Science"
+author: "Meng LI(201620728)"
+header-includes:
+   - \usepackage{framed}
+output: pdf_document
+bibliography: bibliography.bib
+---
+
+## 1. Introduction
+There is no production or result about my research now, so I want to talk about a framework of me. This framework can be found in my github (https://github.com/lm2343635/Mengular), which includes 2 parts: JavaScipt Ajax Loaing and Java Template Engine. In this report, I will compare two loading method in the fuction of JavaScirpt ajax table loading (I will call it ajax table loading from now). At first, I will explain the meaning of ajax table loading. 
+
+For traditional web development, we use PHP, Java, ASP .NET and other programming language for background service program, they have to prepare their own template file such as jsp file in Java Web development. To create a table, code would like this:
+<table>
+	<tbody>
+	<%
+	for(Item item in items) {
+		%>
+		<tr>
+			<td>item.attribute_1</td>
+			<td>item.attribute_2</td>
+			...
+			<td>item.attribute_n</td>
+		</tr>
+		<%
+	}
+	%>
+	</tbody>
+</table>
+This style is same in PHP and other backgroud service programming, which is difficult to read, especially for front end Engineer who only care about broswer side. This style is not comply with MVC(Model-View-Controller) standard. And we can image a futher situation that a table has many rows, for instance, more than 10000 rows. It is no doubt that we could not use such style to show this 10000 rows in a html documents because it is too scroll to create this html document and transfer it to broswer. If we can load 100 rows at first, and when we slow the page down, more 100 rows are loaded dynamically by ajax, things will be better. In fact, peoples are doing like this method. Web applications of Google photos will not load all your photos, when you scroll it down, more photos are loading automatically. 
+
+The question is how to create dom element dynamically after loading table data asyn.
+
