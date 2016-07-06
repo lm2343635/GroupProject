@@ -1,5 +1,5 @@
 ---
-title: "Comparasion of Ajax Table Loading"
+title: "Comparasion of Two Methods in Ajax Table Loading"
 subtitle: "Experiment Design for Computer Science"
 author: "Meng LI(201620728)"
 header-includes:
@@ -7,46 +7,97 @@ header-includes:
 output: 
   pdf_document: 
     latex_engine: xelatex
-bibliography: bibliography.bib
 ---
 
 ## 1. Introduction
-There is no production or result about my research now, so I want to talk about a framework of me. This framework can be found in my github (https://github.com/lm2343635/Mengular), which includes 2 parts: JavaScript Ajax Loading and Java Template Engine. In this report, I will compare two loading method in the function of JavaScript ajax table loading (I will call it ajax table loading from now). At first, I will explain the meaning of ajax table loading. 
+There is no production or result about my research now, so I want to talk about a framework. This framework can be found in my github (https://github.com/lm2343635/Mengular), which includes 2 parts: JavaScript Ajax Loading and Java Template Engine. In this report, I will compare two loading method in the function of JavaScript ajax table loading (I will call it ajax table loading from now). At first, I will explain the meaning of ajax table loading. 
 
-For traditional web development, we use PHP, Java, ASP .NET and other programming language for background service program, they have to prepare their own template file such as jsp file in Java Web development. To create a table, code would like this:
-  <table>
-  	<tbody>
-  	<%
-  	for(Item item in items) {
-  		%>
-  		<tr>
-  			<td><%=item.attribute_1%></td>
-  			<td><%=item.attribute_2%></td>
-  			...
-  			<td><%=item.attribute_n%></td>
-  		</tr>
-  		<%
-  	}
-  	%>
-  	</tbody>
-  </table>
+For traditional web development, we use PHP, Java, ASP .NET and other programming language for background service program, they have to prepare their own template file such as jsp file in Java Web development. To create a table, code in jsp would like this:
+
+    <table>
+    	<tbody>
+    	<%
+    	for(Item item in items) {
+    		%>
+    		<tr>
+    			<td><%=item.attribute_1%></td>
+    			<td><%=item.attribute_2%></td>
+    			...
+    			<td><%=item.attribute_n%></td>
+    		</tr>
+    		<%
+    	}
+    	%>
+    	</tbody>
+    </table>
 This style is same in PHP and other background service programming, which is difficult to read, especially for front end Engineer who only care about browser side. This style is not comply with MVC(Model-View-Controller) standard. And we can image a situation that a table has many rows, for instance, more than 10000 rows. It is no doubt that we could not use such style to show this 10000 rows in a html documents because it is too scroll to create this html document and transfer it to browser. If we can load 100 rows at first, and when we scroll the page down, more 100 rows are loaded dynamically by ajax, things will be better. In fact, peoples are doing like this method. Web applications of Google photos will not load all your photos, when you scroll it down, more photos will be loaded automatically. 
 
 The question is how to create dom element dynamically after loading table data asynchronously There is a function called `$.append()` in jQuery framwork which can append a child element to a parent element, the core question is how to create this child element. We can call a function `document.createElement()` provided by native Javascript API or the equal function in jQuery like `$("<tr>")`. However, this method is just suitabled for such simple situations. With the increment of child element's complexity, a lots of html document is written in javascript which is not convenient to read and rewrite. Thus, we hope a template egine for front end development just like the same thing in background service programming. 
 
 ## 2. Goal
 At first, we prepare a template as which has been introduced in part 1.
-  <table id="example-table">
-    <tbody>
-      <tr id="${id}$" class="mengular-template example-table-template">
-          <td>${attribute_1}$</td>
-      		<td>${attribute_1}$</td>
-      		...
-      		<td>${attribute_1}$</td>
-      </tr>
-    </tbody>
-  </table>
-The row document `<tr>` is the part that we want to load asynchronously. It has two classes incuding `mengular-template` which is defined in `mengular.css` in order to instruct the element is a row template, and `example-table-template` which is assigned by ourself for finding template element. Then we can user the core function `$.mengular(template, data)`(it is a jQuery style function) in Mengular framework to load `items` which is an arry from server asynchronously like this:
-$("#example-table").(".example-table-template", items);
-or 
-$()
+
+    <table id="example-table">
+      <tbody>
+        <tr id="${id}$" class="mengular-template example-table-template">
+            <td>${attribute_1}$</td>
+        		<td>${attribute_1}$</td>
+        		...
+        		<td>${attribute_1}$</td>
+        </tr>
+      </tbody>
+    </table>
+The row document `<tr>` is the part that we want to load asynchronously. It has two classes incuding `mengular-template` which is defined in `mengular.css` in order to instruct the element is a row template, and `example-table-template` which is assigned by ourself for finding template element. Then we can user the core function `$.mengular(template, data)`(it is a jQuery style function) in Mengular framework to load data. This function has two parameters: the first parameter `template` is the css selector of template dom elemtent you want to use, and the second parameter `data` is the data of row which can be a json object or a json array. A json object represent the data of one row, while a json array represent the data if multiple row. My goal is to compare the time of using json object and json array to load table. For instance, there is a json array named `items` downloaded from server asynchronously. We use json object as sencond parameter:
+
+    for(var item of items) {
+      $("#example-table").(".example-table-template", item);
+    }
+or use json array as second parameter
+
+    $("#example-table").(".example-table-template", items);
+You might think that the first method has no meaning because it is just a for-each loop compared to the second method. However, when we consider a situation to bind some event to the dom element, it is more convinient to do this in the first method like this:
+
+    for(var item of items) {
+      $("#example-table").(".example-table-template", item);
+      
+      //Bind a click event for this `<tr>` dom element
+      //There is an id attribute `id="${id}$"` in `<tr>` dom element which is replaced by `item.id`.
+      //Thus we can use jQuery selector `$("#" + item.id)`, 
+      //to get this dom element in order to bind a event for it.
+      $("#" + item.id).click(function() {
+        //Do something...
+      });
+    }
+
+If we use the second method, we shoud bind event after dom element loaded:
+
+    $("#example-table").(".example-table-template", items);
+    for(var item in items) {
+      $("#"+item.id).click(function() {
+        //Do something...
+      });
+    }
+
+## 3. Hypothesis
+Based on this goal, I want to compare the run time of the two method using json object and using json array. Some factors like the number of rows and the number of event need to bind will influence the result. 
+
+## 4. Experiments
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
