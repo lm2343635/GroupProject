@@ -79,9 +79,41 @@ If we use the second method, we shoud bind event after dom element loaded:
     }
 
 ## 3. Hypothesis
-Based on this goal, I want to compare the run time of the two method using json object and using json array. Some factors like the number of rows and the number of event need to bind will influence the result. 
+Based on this goal, I want to compare the run time of the two method using json object and using json array. Some factors like the number of rows and the number of events need to bind will influence the result. My hypohesis is:
+
+  H1: Using json object is better than using json array.
+  
+  H2: Using json array is better than using json object.
+
+The run time of loading rows is evaluation standard of these two method. In other words, the faster it runs, the better it is.
 
 ## 4. Experiments
+To test the run time of it, I designed an experiment. The source code of this experiment can be found in `Mengular`'s github repository(https://github.com/lm2343635/Mengular/blob/master/WebContent/testArray.html, https://github.com/lm2343635/Mengular/blob/master/WebContent/testObject.html). I concentrated on two factors introduced above: number of rows and the number of events. Number of rows is from 100 to 1000, which means there are how many rows in the table. Numbers of events if from 1 to 10, which means there are how many events binded to `<tr>` dom element. In this experiment, all javascript events are onclick events binded with jQuery function `$.click()`. The unit of test time is millisecond.
+
+test of using json object
+64 70 78 59 54 53 53 51 61 56 
+100 136 101 108 117 113 118 109 100 108 
+196 201 155 150 163 178 208 219 281 174 
+268 232 237 250 292 214 236 228 296 234 
+273 453 276 281 359 306 333 318 332 290 
+325 438 346 552 400 417 459 542 383 423 
+416 483 731 454 495 580 478 1273 1008 890 
+654 739 826 837 519 573 728 526 536 726 
+518 778 630 630 708 646 760 792 880 745 
+809 778 728 746 771 881 937 944 1014 744 
+
+test of using json array
+43 58 68 48 44 41 37 39 43 43 
+100 94 72 80 80 80 73 94 96 77 
+121 172 135 138 160 108 102 120 117 123 
+158 184 177 162 150 161 157 162 306 309 
+153 180 187 211 189 247 240 240 617 519 
+377 276 236 233 378 429 214 265 295 245 
+299 262 281 331 267 283 316 326 290 283 
+258 253 262 329 267 283 277 378 282 309 
+282 327 351 302 320 363 318 312 327 389 
+281 335 329 389 336 338 370 594 346 356 
+
 
 
 
