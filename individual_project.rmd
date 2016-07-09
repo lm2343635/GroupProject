@@ -32,7 +32,7 @@ For traditional web development, we use PHP, Java, ASP .NET and other programmin
 ```
 This style is same in PHP and other background service programming, which is difficult to read, especially for front end Engineer who only care about browser side. This style is not comply with MVC(Model-View-Controller) standard. And we can image a situation that a table has many rows, for instance, more than 10000 rows. It is no doubt that we could not use such style to show this 10000 rows in a html documents because it is too scroll to create this html document and transfer it to browser. If we can load 100 rows at first, and when we scroll the page down, more 100 rows are loaded dynamically by ajax, things will be better. In fact, peoples are doing like this method. Web applications of Google photos will not load all your photos, when you scroll it down, more photos will be loaded automatically. 
 
-The question is how to create dom element dynamically after loading table data asynchronously There is a function called `$.append()` in jQuery framwork which can append a child element to a parent element, the core question is how to create this child element. We can call a function `document.createElement()` provided by native Javascript API or the equal function in jQuery like `$("<tr>")`. However, this method is just suitabled for such simple situations. With the increment of child element's complexity, a lots of html document is written in javascript which is not convenient to read and rewrite. Thus, we hope a template egine for front end development just like the same thing in background service programming. 
+The question is how to create dom element dynamically after loading table data asynchronously There is a function called `$.append()` in jQuery framework which can append a child element to a parent element, the core question is how to create this child element. We can call a function `document.createElement()` provided by native javascript API or the equal function in jQuery like `$("<tr>")`. However, this method is just suitable for such simple situations. With the increment of child element's complexity, a lots of html document is written in javascript which is not convenient to read and rewrite. Thus, we hope a template engine for front end development just like the same thing in background service programming. 
 
 ## 2. Goal
 At first, we prepare a template as which has been introduced in part 1.
@@ -49,7 +49,7 @@ At first, we prepare a template as which has been introduced in part 1.
       </tbody>
     </table>
 ```
-The row document `<tr>` is the part that we want to load asynchronously. It has two classes incuding `mengular-template` which is defined in `mengular.css` in order to instruct the element is a row template, and `example-table-template` which is assigned by ourself for finding template element. Then we can user the core function `$.mengular(template, data)`(it is a jQuery style function) in Mengular framework to load data. This function has two parameters: the first parameter `template` is the css selector of template dom elemtent you want to use, and the second parameter `data` is the data of row which can be a json object or a json array. A json object represent the data of one row, while a json array represent the data if multiple row. My goal is to compare the time of using json object and json array to load table. For instance, there is a json array named `items` downloaded from server asynchronously. We use json object as sencond parameter:
+The row document `<tr>` is the part that we want to load asynchronously. It has two classes including `mengular-template` which is defined in `mengular.css` in order to instruct the element is a row template, and `example-table-template` which is assigned by ourselves for finding template element. Then we can user the core function `$.mengular(template, data)`(it is a jQuery style function) in Mengular framework to load data. This function has two parameters: the first parameter `template` is the css selector of template dom element you want to use, and the second parameter `data` is the data of row which can be a json object or a json array. A json object represent the data of one row, while a json array represent the data if multiple row. My goal is to compare the time of using json object and json array to load table. For instance, there is a json array named `items` downloaded from server asynchronously. We use json object as second parameter:
 ```javascript
 
     for(var item of items) {
@@ -59,7 +59,7 @@ The row document `<tr>` is the part that we want to load asynchronously. It has 
 or use json array as second parameter
 
     $("#example-table").(".example-table-template", items);
-You might think that the first method has no meaning because it is just a for-each loop compared to the second method. However, when we consider a situation to bind some event to the dom element, it is more convinient to do this in the first method like this:
+You might think that the first method has no meaning because it is just a for-each loop compared to the second method. However, when we consider a situation to bind some event to the dom element, it is more convenient to do this in the first method like this:
 ```javascript
 
     for(var item of items) {
@@ -76,7 +76,7 @@ You might think that the first method has no meaning because it is just a for-ea
       });
     }
 ```
-If we use the second method, we shoud bind event after dom element loaded:
+If we use the second method, we should bind event after dom element loaded:
 ```javascript
 
     $("#example-table").(".example-table-template", items);
@@ -87,7 +87,7 @@ If we use the second method, we shoud bind event after dom element loaded:
     }
 ```
 ## 3. Hypothesis
-Based on this goal, I want to compare the run time of the two method using json object and using json array. Some factors like the number of rows and the number of events need to bind will influence the result. My hypohesis is:
+Based on this goal, I want to compare the run time of the two method using json object and using json array. Some factors like the number of rows and the number of events need to bind will influence the result. My hypothesis is:
 
   H1: Using json object is better than using json array.
   
@@ -96,7 +96,7 @@ Based on this goal, I want to compare the run time of the two method using json 
 The run time of loading rows is evaluation standard of these two method. In other words, the faster it runs, the better it is.
 
 ## 4. Experiments
-To test the run time of it, I designed an experiment. The source code of this experiment can be found in `Mengular`'s github repository(https://github.com/lm2343635/Mengular/blob/master/WebContent/testArray.html, https://github.com/lm2343635/Mengular/blob/master/WebContent/testObject.html). I concentrated on two factors introduced above: number of rows and the number of events. Number of rows is from 100 to 1000, which means there are how many rows in the table. Numbers of events if from 1 to 10, which means there are how many events binded to `<tr>` dom element. In this experiment, all javascript events are onclick events binded with jQuery function `$.click()`. The unit of test time is millisecond. For each method, there are 100 results of function run time. I saved each 100 results to a txt file as the format of $Nr Ne T$, $Nr$ means number of runtime, $Ne$ means number of events and $T$ means the run time. 
+To test the run time of it, I designed an experiment. The source code of this experiment can be found in `Mengular`'s github repository(https://github.com/lm2343635/Mengular/blob/master/WebContent/testArray.html, https://github.com/lm2343635/Mengular/blob/master/WebContent/testObject.html). I concentrated on two factors introduced above: number of rows and the number of events. Number of rows is from 100 to 1000, which means there are how many rows in the table. Numbers of events if from 1 to 10, which means there are how many events bind to `<tr>` dom element. In this experiment, all javascript events are onclick events bind with jQuery function `$.click()`. The unit of test time is millisecond. For each method, there are 100 results of function run time. I saved each 100 results to a txt file as the format of $Nr Ne T$, $Nr$ means number of runtime, $Ne$ means number of events and $T$ means the run time. 
 
 Next, I am going to test the function relationship between $T$, $Nr$ and $Ne$. I combined the two txt file together at first. Then I use `lsfit` to analyze the relationship between them.
 ```r
@@ -138,6 +138,20 @@ From `R-Square` we can conclude that $t=f(Nr, Ne)$ is nearly a linear function. 
 Using json array: $Ta=-20.5000+0.3848*Nr+3.2339*Ne$
 
 Using json object: $To=--72.5233+0.7006*Nr+5.3752*Ne$
-In first octant, To is always bigger than Ta, which means using json array runs faster than using json array. There are plot of the two method
-![Plot Graph of Using JSON Object](jsonObject.jpg=100x)
-![Plot Graph of Using JSON Array](jsonArray.jpg)
+
+In first octant, $To$ is always bigger than $Ta$ when $Ne$ and $Nr$ is integer, which means using json array runs faster than using json array.
+
+![Plot Graph of Using JSON Object](plot_jo.jpg)
+
+![Plot Graph of Using JSON Array](plot_ja.jpg)
+
+## 5. Conclusion
+From the result of experiment, we can get the conclusion that using json array runs faster than using json object.
+
+However, when we use this framework practically, number of rows and number of events may not be so huge as we tested in the experiment. For ajax table loading, loading 10 to 100 items one time is more suitable for practical development. Number of events for dom element and its child element may not be more than 10. Thus, we consider it one more time, I think the difference between the two methods is not obvious when the number of rows is less than 100, and the number of events nearly not influence the run time when it is less than 10.
+
+## Appendix
+* The source code if mengular.js can be found in https://github.com/lm2343635/Mengular/blob/master/WebContent/static/js/mengular.js.
+* The source code of this experiment can be found in https://github.com/lm2343635/Mengular/blob/master/WebContent/testArray.html and  https://github.com/lm2343635/Mengular/blob/master/WebContent/testObject.html.
+* The txt data of experiment can be found in https://github.com/lm2343635/GroupProject/blob/master/jo.txt and https://github.com/lm2343635/GroupProject/blob/master/ja.txt.
+
